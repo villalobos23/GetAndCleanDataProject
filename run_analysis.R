@@ -25,11 +25,32 @@ test.read <- function(activities,featureList){
   testSet <- merge(testSet,activities,by.x="actLabelID",by.y="activity.ID")
   testSet
 }
+#improve to do all replacements at once
+analysis.prepareFeatures <- function(featureList){
+  featureNames <- featureList$feature.description
+  featureNames <- str_replace_all(featureNames,"[\\(\\)]","")
+  featureNames <- str_replace_all(featureNames,"[-]","")
+  featureNames <- str_replace_all(featureNames,"Acc","acceleration")
+  featureNames <- str_replace_all(featureNames,"std","standarddeviation")
+  featureNames <- str_replace_all(featureNames,"Gyro","gyroscope")
+  featureNames <- str_replace_all(featureNames,"Mag","magnitude")
+  featureNames <- str_replace_all(featureNames,"Energy","energy")
+  featureNames <- str_replace_all(featureNames,"Body","body")
+  featureNames <- str_replace_all(featureNames,"Jerk","jerk")
+  featureNames <- str_replace_all(featureNames,"Gravity","gravity")
+  featureNames <- str_replace_all(featureNames,"X","inx")
+  featureNames <- str_replace_all(featureNames,"Y","iny")
+  featureNames <- str_replace_all(featureNames,"Z","inz")
+  featureNames <- gsub("^t","timefor",featureNames)
+  featureNames <- gsub("^f","frequencyfor",featureNames)
+  featureNames
+}
 
 analysis.merge <-function(){
   merged.dataset <- data.frame()
   features <- read.csv(file="features.txt",header=FALSE,sep =" ")
   features <- rename(features, feature.ID = V1, feature.description = V2)
+  features$feature.description <- analysis.prepareFeatures(features)
   activityLabels <- read.csv(file="activity_labels.txt",header = FALSE, sep=" ")
   activityLabels <- rename(activityLabels,activity.ID = V1, activity.descrp = V2)
   trainDS <- train.read(activityLabels,features)
@@ -42,7 +63,7 @@ analysis.extract <- function(){
   columnNames <- colnames(merged)
   meanCols <- merged[,grep('mean',columnNames)]
   meanCols <- select(meanCols,-contains("meanFreq"))
-  stdCols <- merged[grep('std',columnNames)]
+  stdCols <- merged[grep('standarddeviation',columnNames)]
   extracted <- data.frame(subjectID = merged$subjectID)
   extracted$activity <- merged$activity.descrp
   extracted <- cbind(extracted,meanCols)
@@ -52,12 +73,15 @@ analysis.extract <- function(){
 analysis.average <- function(){
   bulk <- analysis.extract()
   subjectsAverage <- group_by(bulk,subjectID,activity)
-  summarize(subjectsAverage)
+  summarize_each(subjectsAverage,funs(mean))
 }
 
 analysis.run <- function(){
   library(dplyr)
   library(data.table)
-  analysis.average()
+  library(stringr)
+  tidySet <- analysis.average()
+  write.table(tidySet,file="tidySet.txt",row.names = FALSE)
+  tidySet
 }
 #renombrar las variables mejor
