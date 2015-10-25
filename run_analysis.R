@@ -73,7 +73,7 @@ analysis.extract <- function(){
 analysis.average <- function(){
   bulk <- analysis.extract()
   subjectsAverage <- group_by(bulk,subjectID,activity)
-  summarize_each(subjectsAverage,funs(mean))
+  summarize_each(subjectsAverage,funs(mean(.,na.rm = TRUE)))
 }
 
 analysis.run <- function(){
