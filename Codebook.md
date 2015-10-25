@@ -22,7 +22,7 @@ The final data set is reduced to 68 variables and a total of 180 observations. T
 ### Renaming of the variables
 The variables were renamed to a complete lower case standard with no whitespaces, the units remain the same, being
 
-*subjectID is the value that represents a particular subject, it ranges from 1 to 30
+* subjectID is the value that represents a particular subject, it ranges from 1 to 30
 * activity is the activity being performed at a particular measurement and the possible values are WALKING, WALKING_UPSTAIRS, WALKING_DOWNSTAIRS,SITTING, STANDING and LAYING
 
 * Prefix t renamed to "timefor" 
@@ -37,10 +37,10 @@ The variables were renamed to a complete lower case standard with no whitespaces
 
 NOTE: the measurements in the means of 
 
-*gravityMean
-*tBodyAccMean
-*tBodyAccJerkMean
-*tBodyGyroMean
-*tBodyGyroJerkMean
+* gravityMean
+* tBodyAccMean
+* tBodyAccJerkMean
+* tBodyGyroMean
+* tBodyGyroJerkMean
 
 Were not removed
